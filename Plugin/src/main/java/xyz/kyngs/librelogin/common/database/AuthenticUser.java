@@ -10,6 +10,7 @@ import xyz.kyngs.librelogin.api.crypto.HashedPassword;
 import xyz.kyngs.librelogin.api.database.User;
 
 import java.sql.Timestamp;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -25,9 +26,10 @@ public class AuthenticUser implements User {
     private String ip;
     private Timestamp lastAuthentication;
     private String lastServer;
+    private Map<String, String> lastServers;
     private String email;
 
-    public AuthenticUser(UUID uuid, UUID premiumUUID, HashedPassword hashedPassword, String lastNickname, Timestamp joinDate, Timestamp lastSeen, String secret, String ip, Timestamp lastAuthentication, String lastServer, String email) {
+    public AuthenticUser(UUID uuid, UUID premiumUUID, HashedPassword hashedPassword, String lastNickname, Timestamp joinDate, Timestamp lastSeen, String secret, String ip, Timestamp lastAuthentication, String lastServer, Map<String, String> lastServers, String email) {
         this.uuid = uuid;
         this.premiumUUID = premiumUUID;
         this.hashedPassword = hashedPassword;
@@ -38,6 +40,7 @@ public class AuthenticUser implements User {
         this.ip = ip;
         this.lastAuthentication = lastAuthentication;
         this.lastServer = lastServer;
+        this.lastServers = lastServers;
         this.email = email;
     }
 
@@ -146,6 +149,14 @@ public class AuthenticUser implements User {
 
     public void setLastServer(String lastServer) {
         this.lastServer = lastServer;
+    }
+
+    public Map<String, String> getLastServers() {
+        return lastServers;
+    }
+
+    public void setLastServers(Map<String, String> lastServers) {
+        this.lastServers = lastServers;
     }
 
 }

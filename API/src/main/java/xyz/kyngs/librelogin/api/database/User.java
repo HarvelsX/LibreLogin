@@ -9,6 +9,7 @@ package xyz.kyngs.librelogin.api.database;
 import xyz.kyngs.librelogin.api.crypto.HashedPassword;
 
 import java.sql.Timestamp;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -29,6 +30,10 @@ public interface User {
     String getLastServer();
 
     void setLastServer(String lastServer);
+
+    Map<String, String> getLastServers();
+
+    void setLastServers(Map<String, String> lastServer);
 
     Timestamp getLastAuthentication();
 

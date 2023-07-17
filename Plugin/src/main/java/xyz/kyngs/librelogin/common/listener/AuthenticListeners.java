@@ -181,7 +181,7 @@ public class AuthenticListeners<Plugin extends AuthenticLibreLogin<P, S>, P, S> 
      * @return The validated user, or null if the user doesn't exist and {@code generate} is false.
      * @throws InvalidCommandArgument If the username is invalid or there are other validation issues.
      */
-    private User checkAndValidateByName(String username, @Nullable UUID premiumID, boolean generate, InetAddress ip) throws InvalidCommandArgument {
+    protected User checkAndValidateByName(String username, @Nullable UUID premiumID, boolean generate, InetAddress ip) throws InvalidCommandArgument {
         // Get the user by the name not case-sensitively
         var user = plugin.getDatabaseProvider().getByName(username);
 
@@ -236,6 +236,7 @@ public class AuthenticListeners<Plugin extends AuthenticLibreLogin<P, S>, P, S> 
                         ip.getHostAddress(),
                         null,
                         null,
+                        null,
                         null
                 );
             } else {
@@ -248,6 +249,7 @@ public class AuthenticListeners<Plugin extends AuthenticLibreLogin<P, S>, P, S> 
                         Timestamp.valueOf(LocalDateTime.now()),
                         null,
                         ip.getHostAddress(),
+                        null,
                         null,
                         null,
                         null

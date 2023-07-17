@@ -328,9 +328,10 @@ public class LibreLoginCommand<P> extends StaffCommand<P> {
                     null,
                     Timestamp.valueOf(LocalDateTime.now()),
                     null,
+                    null,
                     null
             );
-
+            // I don't think this should happen in this class, maybe delegate to the user manager?
             getDatabaseProvider().insertUser(user);
 
             audience.sendMessage(getMessage("info-registered"));

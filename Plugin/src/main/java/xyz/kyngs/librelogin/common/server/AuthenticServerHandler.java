@@ -19,10 +19,7 @@ import xyz.kyngs.librelogin.common.config.ConfigurationKeys;
 import xyz.kyngs.librelogin.common.event.events.AuthenticLimboServerChooseEvent;
 import xyz.kyngs.librelogin.common.event.events.AuthenticLobbyServerChooseEvent;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Optional;
+import java.util.*;
 
 import static xyz.kyngs.librelogin.common.config.ConfigurationKeys.LIMBO;
 import static xyz.kyngs.librelogin.common.config.ConfigurationKeys.REMEMBER_LAST_SERVER;
@@ -94,8 +91,17 @@ public class AuthenticServerHandler<P, S> implements ServerHandler<P, S> {
 
     @Override
     public S chooseLobbyServer(@Nullable User user, P player, boolean remember) {
+        var virtual = plugin.getPlatformHandle().getPlayersVirtualHost(player);
+
+        plugin.getLogger().debug("Virtual host for player " + plugin.getPlatformHandle().getUsernameForPlayer(player) + ": " + virtual);
+
         if (user != null && remember && plugin.getConfiguration().get(REMEMBER_LAST_SERVER)) {
             var last = user.getLastServer();
+
+            final var lastServers = user.getLastServers();
+            if (!lastServers.isEmpty() && virtual != null) {
+                last = lastServers.getOrDefault(virtual, last);
+            }
 
             if (last != null) {
                 var server = plugin.getPlatformHandle().getServer(last, false);
@@ -113,10 +119,6 @@ public class AuthenticServerHandler<P, S> implements ServerHandler<P, S> {
         plugin.getEventProvider().fire(plugin.getEventTypes().lobbyServerChoose, event);
 
         if (event.getServer() != null) return event.getServer();
-
-        var virtual = plugin.getPlatformHandle().getPlayersVirtualHost(player);
-
-        plugin.getLogger().debug("Virtual host for player " + plugin.getPlatformHandle().getUsernameForPlayer(player) + ": " + virtual);
 
         var servers = virtual == null ? lobbyServers.get("root") : lobbyServers.get(virtual);
 

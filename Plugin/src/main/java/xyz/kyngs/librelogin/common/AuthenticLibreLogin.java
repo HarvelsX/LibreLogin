@@ -9,6 +9,7 @@ package xyz.kyngs.librelogin.common;
 import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.CommandManager;
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -881,6 +882,10 @@ public abstract class AuthenticLibreLogin<P, S> implements LibreLoginPlugin<P, S
             if (server == null) return;
             var user = databaseProvider.getByUUID(platformHandle.getUUIDForPlayer(player));
             if (user != null && !getConfiguration().get(LIMBO).contains(server)) {
+                var virtual = platformHandle.getPlayersVirtualHost(player);
+                if (virtual != null) {
+                    user.setLastServers(ImmutableMap.<String, String>builder().putAll(user.getLastServers()).put(virtual, server).build());
+                }
                 user.setLastServer(server);
                 databaseProvider.updateUser(user);
             }
