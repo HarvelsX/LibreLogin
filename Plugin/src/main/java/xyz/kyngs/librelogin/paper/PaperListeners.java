@@ -148,7 +148,7 @@ public class PaperListeners extends AuthenticListeners<PaperLibreLogin, Player, 
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void chooseWorld(PlayerSpawnLocationEvent event) {
-        var world = chooseServer(event.getPlayer(), ipCache.getIfPresent(event.getPlayer()), readOnlyUserCache.getIfPresent(event.getPlayer().getUniqueId()));
+        var world = chooseServer(event.getPlayer(), null, ipCache.getIfPresent(event.getPlayer()), readOnlyUserCache.getIfPresent(event.getPlayer().getUniqueId()));
         ipCache.invalidate(event.getPlayer());
         spawnLocationCache.invalidate(event.getPlayer());
         if (world.value() == null) {

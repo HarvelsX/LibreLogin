@@ -95,7 +95,7 @@ public class BungeeCordListener extends AuthenticListeners<BungeeCordLibreLogin,
     public void chooseServer(ServerConnectEvent event) {
         if (!event.getReason().equals(ServerConnectEvent.Reason.JOIN_PROXY)) return;
 
-        var server = chooseServer(event.getPlayer(), null, null);
+        var server = chooseServer(event.getPlayer(), event.getTarget(), null, null);
 
         if (server.value() == null) {
             event.getPlayer().disconnect(plugin.getSerializer().serialize(plugin.getMessages().getMessage("kick-no-" + (server.key() ? "lobby" : "limbo"))));

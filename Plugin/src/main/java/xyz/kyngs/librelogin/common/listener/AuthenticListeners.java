@@ -260,15 +260,11 @@ public class AuthenticListeners<Plugin extends AuthenticLibreLogin<P, S>, P, S> 
         return user;
     }
 
-    protected BiHolder<Boolean, S> chooseServer(P player, @Nullable String ip, @Nullable User user) {
+    protected BiHolder<Boolean, S> chooseServer(P player, @Nullable S target, @Nullable String ip, @Nullable User user) {
         var id = platformHandle.getUUIDForPlayer(player);
         var fromFloodgate = plugin.fromFloodgate(id);
 
-        var sessionTime = Duration.ofSeconds(plugin.getConfiguration().get(ConfigurationKeys.SESSION_TIMEOUT));
-
-        if (fromFloodgate) {
-            user = null;
-        } else if (user == null) {
+        if (user == null) {
             user = plugin.getDatabaseProvider().getByUUID(id);
         }
 
@@ -276,10 +272,18 @@ public class AuthenticListeners<Plugin extends AuthenticLibreLogin<P, S>, P, S> 
             ip = platformHandle.getIP(player);
         }
 
-        if (fromFloodgate || user.autoLoginEnabled() || (sessionTime != null && user.getLastAuthentication() != null && ip.equals(user.getIp()) && user.getLastAuthentication().toLocalDateTime().plus(sessionTime).isAfter(LocalDateTime.now()))) {
-            return new BiHolder<>(true, plugin.getServerHandler().chooseLobbyServer(user, player, true));
-        } else {
+        var sessionActive = false;
+        var sessionTime = Duration.ofSeconds(plugin.getConfiguration().get(ConfigurationKeys.SESSION_TIMEOUT));
+        if (sessionTime != null && user.getLastAuthentication() != null) {
+            var endTime = user.getLastAuthentication().toLocalDateTime().plus(sessionTime);
+            sessionActive = ip.equals(user.getIp()) && endTime.isAfter(LocalDateTime.now());
+        }
+
+        if (!(fromFloodgate || user.autoLoginEnabled() || sessionActive)) {
             return new BiHolder<>(false, plugin.getServerHandler().chooseLimboServer(user, player));
         }
+
+        var chooseLobby = target == null || platformHandle.getServerName(target).equalsIgnoreCase("LibreLogin");
+        return new BiHolder<>(true, chooseLobby ? plugin.getServerHandler().chooseLobbyServer(user, player, true) : null);
     }
 }
