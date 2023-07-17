@@ -118,6 +118,8 @@ public class VelocityListeners extends AuthenticListeners<VelocityLibreLogin, Pl
                 channel = (Channel) CHANNEL.get(mcConnection);
 
                 if (channel.attr(FLOODGATE_ATTR).get() != null) {
+                    // Needs to be handled to save the last server
+                    checkAndValidateByName(event.getUsername(), null, true, event.getConnection().getRemoteAddress().getAddress());
                     return; // Player is coming from Floodgate
                 }
             } catch (Exception e) {

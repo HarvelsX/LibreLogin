@@ -41,7 +41,11 @@ public class BungeeCordListener extends AuthenticListeners<BungeeCordLibreLogin,
     @EventHandler(priority = HIGHEST)
     public void onPreLogin(PreLoginEvent event) {
 
-        if (plugin.fromFloodgate(event.getConnection().getUniqueId())) return;
+        if (plugin.fromFloodgate(event.getConnection().getUniqueId())) {
+            // Needs to be handled to save the last server
+            checkAndValidateByName(event.getConnection().getName(), null, true, event.getConnection().getAddress().getAddress());
+            return;
+        }
 
         event.registerIntent(plugin.getBootstrap());
 
